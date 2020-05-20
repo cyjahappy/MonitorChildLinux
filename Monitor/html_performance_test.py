@@ -20,10 +20,11 @@ def get_html_performance_test_result(url):
     chrome_options.add_argument('--headless')
     # 服务器ubuntu上大多没有gpu，–disable-gpu以免报错
     chrome_options.add_argument('--disable-gpu')
-    # 避免网站检测到你使用的是无界模式进行反抓取
+    # 添加User-Agent避免网站检测到你使用的是无界模式进行反抓取
     chrome_options.add_argument(
-        "user-agent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'")
+        "user-agent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36'")
     # 使用Chrome浏览器来模拟测试环境
+    # 部署不同服务器的时候需要根据实际情况修改路径!!!!!!!
     driver = webdriver.Chrome(chrome_options=chrome_options,
                               executable_path='/home/cyj/.virtualenvs/MonitorChildLinux/bin/chromedriver')
     # 使用浏览器打开对应的URL

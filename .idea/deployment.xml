@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="cyj@157.245.176.143:22 password">
+    <serverData>
+      <paths name="San Francisco">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/MonitorChildLinux" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/bin" />
+            <excludedPath local="true" path="$PROJECT_DIR$/lib" />
+            <excludedPath local="true" path="$PROJECT_DIR$/include" />
+            <excludedPath local="true" path="$PROJECT_DIR$/pyvenv.cfg" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="cyj@157.245.176.143:22 password">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/cyj/MonitorChildLinux" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>

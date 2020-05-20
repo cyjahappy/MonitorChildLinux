@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="0982c380-6dbb-40e6-8ecf-c06184f5edee" name="San Francisco" url="http://157.245.176.143">
+        <fileTransfer rootFolder="/home/cyj" accessType="SFTP" host="157.245.176.143" port="22" sshConfigId="ce26ebc6-b7d6-4c3c-8c0f-5bbefe836e2b" sshConfig="cyj@157.245.176.143:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

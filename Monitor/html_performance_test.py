@@ -13,6 +13,7 @@ def get_html_performance_test_result(url):
     :return:
     """
     chrome_options = Options()
+    # 设置Chrome以root权限运行
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('blink-settings=imagesEnabled=false')
@@ -104,9 +105,9 @@ def html_performance_test_to_database():
 
     # 如果html_performance_problematic_url不为空, 则调用警报函数
     if len(html_performance_problematic_url) > 0:
-        html_performance_alert_message = dict(
+        html_performance_alert_message_dict = dict(
             zip(html_performance_problematic_url, html_performance_problematic_results))
-        html_performance_alert(html_performance_alert_message)
+        html_performance_alert(html_performance_alert_message_dict)
     return
 
 

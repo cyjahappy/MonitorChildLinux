@@ -42,7 +42,7 @@ def iperf_check(iperf3_result):
 
 def iperf_alert(iperf3_alert_message_dict):
     """
-    接收检测不达标的服务器信息, 并将列表内容传递给母服务器
+    接收检测不达标的服务器信息, 并将信息传递给母服务器
     :param iperf3_alert_message_dict:
     """
     requests.post('http://localhost:8000/iperf-test-alert', data=iperf3_alert_message_dict)
@@ -60,6 +60,17 @@ def ping_check(ping_result):
     return False
 
 
+def ping_alert(ping_alert_message_dict):
+    """
+    接收ping测试中不达标的服务器信息, 并将信息传递给母服务器
+    :param ping_alert_message_dict:
+    :return:
+    """
+
+    # requests.post('http://母服务器IP/ping-test-alert', data=ping_alert_message_dict)
+    return
+
+
 def html_performance_check(html_performance_test_result):
     """
     接受html_performance_test_result数据, 检测整体页面打开时间是否超过阈值, 如果超过就返回True, 否则返回False
@@ -71,12 +82,12 @@ def html_performance_check(html_performance_test_result):
     return False
 
 
-def html_performance_alert(html_performance_problematic_url):
+def html_performance_alert(html_performance_alert_message_dict):
     """
     接收HTML性能检验中不达标的URL字典, 并将URL字典传递到母服务器
-    :param html_performance_problematic_url:
+    :param html_performance_alert_message_dict:
     """
-    requests.post('http://localhost:8000/html-performance-test-alert', data=html_performance_problematic_url)
+    requests.post('http://localhost:8000/html-performance-test-alert', data=html_performance_alert_message_dict)
 
 
 def refresh_threshold():

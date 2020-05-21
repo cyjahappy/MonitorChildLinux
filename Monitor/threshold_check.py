@@ -1,5 +1,5 @@
-import requests, json
-from .models import ServerInfoThreshold
+import requests
+from .models import ServerInfoThreshold, MainServerIP
 
 # 部署的时候要改端口!!!!!!!
 # 从数据库中获取各项指标阈值存在变量中, 避免每次检测阈值的时候都需要从数据库中取值
@@ -15,16 +15,19 @@ tcp_sent_Mbps_threshold = Threshold.tcp_sent_Mbps_threshold
 tcp_received_Mbps_threshold = Threshold.tcp_received_Mbps_threshold
 ping_threshold = Threshold.ping_threshold
 
+# 从数据库中取母服务器的IP地址
+main_server_ip = MainServerIP.objects.get(id=1).server_ip
+
 
 def server_info_check(server_info):
     """
     接收server_info的数据, 逐一检查是否超过阈值, 如果超过就报警
     :param server_info:
     """
-
+    url = 'http://' + main_server_ip + '/server-info-alert'
     if (server_info['cpu'] > cpu_threshold) or (server_info['memory'] > memory_threshold) or (server_info[
             'disk'] > disk_threshold) or (server_info['network'] > bandwidth_threshold):
-        requests.post('http://localhost:8000/server-info-alert', data=server_info)
+        requests.post(url, data=server_info)
     return
 
 
@@ -45,7 +48,8 @@ def iperf_alert(iperf3_alert_message_dict):
     接收检测不达标的服务器信息, 并将信息传递给母服务器
     :param iperf3_alert_message_dict:
     """
-    requests.post('http://localhost:8000/iperf-test-alert', data=iperf3_alert_message_dict)
+    url = 'http://' + main_server_ip + '/iperf-test-alert'
+    requests.post(url, data=iperf3_alert_message_dict)
 
 
 def ping_check(ping_result):
@@ -66,8 +70,8 @@ def ping_alert(ping_alert_message_dict):
     :param ping_alert_message_dict:
     :return:
     """
-
-    # requests.post('http://母服务器IP/ping-test-alert', data=ping_alert_message_dict)
+    url = 'http://' + main_server_ip + '/ping-test-alert'
+    requests.post(url, data=ping_alert_message_dict)
     return
 
 
@@ -87,7 +91,8 @@ def html_performance_alert(html_performance_alert_message_dict):
     接收HTML性能检验中不达标的URL字典, 并将URL字典传递到母服务器
     :param html_performance_alert_message_dict:
     """
-    requests.post('http://localhost:8000/html-performance-test-alert', data=html_performance_alert_message_dict)
+    url = 'http://' + main_server_ip + '/html-performance-test-alert'
+    requests.post(url, data=html_performance_alert_message_dict)
 
 
 def refresh_threshold():

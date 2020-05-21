@@ -84,3 +84,8 @@ class ServerInfoThreshold(models.Model):
     tcp_sent_Mbps_threshold = models.FloatField()
     tcp_received_Mbps_threshold = models.FloatField()
 
+
+# 存储主服务器的IP地址
+class MainServerIP(models.Model):
+    id = models.AutoField(primary_key=True)
+    server_ip = models.GenericIPAddressField()

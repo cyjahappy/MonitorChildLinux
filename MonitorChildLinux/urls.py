@@ -6,6 +6,7 @@ from django.conf.urls import url
 urlpatterns = [
     path('monitor/server-info-api', views.ServerInfoList.as_view()),
     path('monitor/server-info-to-db', views.ServerInfo_to_Database.as_view()),
+    path('monitor/ping-results-api', views.PingResult.as_view()),
     path('monitor/ping-results-to-db', views.PingResults_to_Database.as_view()),
     path('monitor/html-performance-test-result-api', views.HTMLPerformanceTestResult.as_view()),
     path('monitor/html-performance-test-results-to-db', views.HTMLTestResults_to_Database.as_view()),

@@ -22,7 +22,7 @@ class ServerList(models.Model):
 class PingResults(models.Model):
     id = models.AutoField(primary_key=True)
     server_ip = models.ForeignKey(ServerList, on_delete=models.CASCADE)
-    ping_result = models.FloatField(null=True)
+    result = models.FloatField(null=True)
     date = models.DateTimeField(auto_now=True, null=True)
 
 
@@ -36,18 +36,6 @@ class iPerfTestResults(models.Model):
     tcp_mss_default = models.FloatField(null=True)
     error = models.CharField(null=True, max_length=30)
     date = models.DateTimeField(auto_now=True, null=True)
-
-
-class PingResult(models.Model):
-    """
-    抽象模型, 用于初始化PingResultSerializer
-    """
-    id = models.AutoField(primary_key=True)
-    server_ip = models.GenericIPAddressField()
-    ping_result = models.FloatField(null=True)
-
-    class Meta:
-        abstract = True
 
 
 # 存储需要检测H5访问时长的网址列表

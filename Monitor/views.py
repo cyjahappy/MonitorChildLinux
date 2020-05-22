@@ -1,4 +1,4 @@
-from .serializers import ServerInfoSerializer, PingResultSerializer, iPerfTestResultsSerializer, \
+from .serializers import ServerInfoSerializer, PingResultsSerializer, iPerfTestResultsSerializer, \
     ServerInfoThresholdSerializer, HTMLTestResultsSerializer, ServerListSerializer
 from rest_framework import status, generics
 from rest_framework.views import APIView
@@ -77,7 +77,7 @@ class HTMLTestResults_to_Database(APIView):
 
 class PingResults_to_Database(APIView):
     """
-    对ServerList表中所有的IP依次进行ping测试, 并将测试结果存储在PingResult表中(还没测试!)
+    对ServerList表中所有的IP依次进行ping测试, 并将测试结果存储在PingResult表中
     """
 
     def get(self, request, format=None):
@@ -90,13 +90,13 @@ class PingResults_to_Database(APIView):
 
 class PingResult(APIView):
     """
-    接收一个IP地址, ping之后将结果以JSON形式返回(还没测试!)
+    接收一个IP地址, ping之后将结果以JSON形式返回
     """
 
     def post(self, request, format=None):
         server_ip = request.data['server_ip']
         ping_result = get_ping_result(server_ip)
-        serializer = PingResultSerializer(data=ping_result)
+        serializer = PingResultsSerializer(data=ping_result)
         if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

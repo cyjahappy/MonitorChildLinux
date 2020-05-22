@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ServerInfo, PingResults, HTMLTestResults, PingResult, iPerfTestResults, ServerInfoThreshold, ServerList
+from .models import ServerInfo, PingResults, HTMLTestResults, iPerfTestResults, ServerInfoThreshold, ServerList
 
 
 class ServerInfoSerializer(serializers.ModelSerializer):
@@ -11,13 +11,7 @@ class ServerInfoSerializer(serializers.ModelSerializer):
 class PingResultsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PingResults
-        fields = ('id', 'server_ip', 'ping_result', 'date')
-
-
-class PingResultSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PingResult
-        fields = ('server_ip', 'ping_result')
+        fields = ('server_ip', 'result')
 
 
 class HTMLTestResultsSerializer(serializers.ModelSerializer):

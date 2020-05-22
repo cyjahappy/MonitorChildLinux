@@ -51,7 +51,7 @@ def ping_result_to_database():
             # 将ping结果存储进数据库
             PingResultsObject = PingResults()
             PingResultsObject.server_ip_id = ping_result['server_ip']
-            PingResultsObject.ping_result = ping_result['result']
+            PingResultsObject.result = ping_result['result']
             PingResultsObject.save()
         # 如果目标服务器无法正确返回ping的结果, 将目标服务器和结果传入列表
         else:

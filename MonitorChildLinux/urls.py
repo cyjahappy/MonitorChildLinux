@@ -8,6 +8,7 @@ urlpatterns = [
     path('monitor/server-info-to-db', views.ServerInfo_to_Database.as_view()),
     path('monitor/ping-results-api', views.PingResult.as_view()),
     path('monitor/ping-results-to-db', views.PingResults_to_Database.as_view()),
+    path('monitor/ping-results-minutes', views.DisplayPingTestResults.as_view()),
     path('monitor/html-performance-test-result-api', views.HTMLPerformanceTestResult.as_view()),
     path('monitor/html-performance-test-results-to-db', views.HTMLTestResults_to_Database.as_view()),
     path('monitor/iperf3-test-results-to-db', views.iPerfResults_to_Database.as_view()),

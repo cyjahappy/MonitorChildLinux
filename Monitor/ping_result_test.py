@@ -1,3 +1,5 @@
+import pytz
+from datetime import datetime, timedelta
 from ping3 import ping
 from .models import ServerList, PingResults
 from .threshold_check import ping_check, ping_alert
@@ -66,6 +68,53 @@ def ping_result_to_database():
             zip(ping_problematic_server_ip, ping_problematic_results))
         ping_alert(ping_alert_message_dict)
     return
+
+
+# 定义在前端图表中一次性展示的数据量
+number_of_data = 10
+time_zone = pytz.timezone('Asia/Shanghai')
+
+
+# 以分钟为单位从数据库中取值
+def get_database_ping_test_result_minutes(server_ip):
+    """
+    以分钟为单位从数据库中取值
+    :return: 存储前十分钟系统各项指标的字典
+    """
+
+    # 获取今天的日期
+    now = datetime.now()
+    database_ping_test_result_minutes = {
+        'result': [],
+        'date': [],
+    }
+    i = number_of_data
+    while i > 0:
+        date_to_get_data = now - timedelta(minutes=i)
+        # 逐个提取年月日
+        date_to_get_data_year = (date_to_get_data.strftime('%Y'))
+        date_to_get_data_month = (date_to_get_data.strftime('%m'))
+        date_to_get_data_day = (date_to_get_data.strftime('%d'))
+        date_to_get_data_hour = (date_to_get_data.strftime('%H'))
+        date_to_get_data_minute = (date_to_get_data.strftime('%M'))
+        # 获取这个时间点的QuerySet
+        PingResultsData = PingResults.objects.filter(date__year=date_to_get_data_year,
+                                                               date__month=date_to_get_data_month,
+                                                               date__day=date_to_get_data_day,
+                                                               date__hour=date_to_get_data_hour,
+                                                               date__minute=date_to_get_data_minute,
+                                                               server_ip_id=server_ip)
+
+        # 只有QuerySet不为空,才会进行取值
+        if PingResultsData.exists():
+            database_ping_test_result_minutes['result'].append(PingResultsData[0].result)
+            # 转换时区
+            database_ping_test_result_minutes['date'].append(
+                PingResultsData[0].date.astimezone(time_zone).strftime('%H:%M'))
+
+        i = i - 1
+
+    return database_ping_test_result_minutes
 
 
 '''

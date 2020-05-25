@@ -4,7 +4,7 @@ from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .server_info_test import get_server_info, server_info_to_database, get_database_server_info_minutes
-from .ping_result_test import ping_result_to_database, get_ping_result
+from .ping_result_test import ping_result_to_database, get_ping_result, get_database_ping_test_result_minutes
 from .html_performance_test import html_performance_test_to_database, get_html_performance_test_result, \
     get_database_html_performance_test_result_minutes
 from .iperf_test import iperf3_result_to_database, iperf3_test, get_database_iperf3_test_result_minutes
@@ -243,5 +243,19 @@ class DisplayIPerfTestResults(APIView):
             server_ip = request.data['server_ip']
             database_iperf3_test_result_minutes = get_database_iperf3_test_result_minutes(server_ip)
             return Response(database_iperf3_test_result_minutes, status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class DisplayPingTestResults(APIView):
+    """
+    接收一个Server IP, 以一定规则从iPerfTestResults表中提取有关此Server IP的数据, 并以JSON形式返回
+    """
+
+    def post(self, request):
+        try:
+            server_ip = request.data['server_ip']
+            database_ping_test_result_minutes = get_database_ping_test_result_minutes(server_ip)
+            return Response(database_ping_test_result_minutes, status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)

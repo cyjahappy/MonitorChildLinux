@@ -160,31 +160,20 @@ class TargetServerList(generics.ListAPIView):
     serializer_class = ServerListSerializer
 
 
-class ServerInfoThresholdUpdate(generics.UpdateAPIView):
+class ServerInfoThresholdUpdate(APIView):
     """
-    定义PUT操作,更新服务期各项指标阈值
-
-    示例HTTP Request:
-    PUT http://localhost:8000/server-info-threshold-update/1/
-    Content-Type: application/json
-
-    {
-      "cpu_threshold": "91",
-      "memory_threshold": "91",
-      "disk_threshold": "91",
-      "bandwidth_threshold": "91",
-      "HTML_open_time_threshold": "91",
-      "tcp_sent_Mbps_threshold": "0",
-      "tcp_received_Mbps_threshold": "0",
-      "microservices_exec_time_threshold": "91",
-      "backend_management_system_open_time_threshold": "91"
-    }
+    更新服务器阈值的数据表
     """
-    queryset = ServerInfoThreshold.objects.all()
-    serializer_class = ServerInfoThresholdSerializer
-
-    # 调用函数使用数据表中的阈值信息刷新缓存的阈值
-    refresh_threshold()
+    def post(self, request):
+        try:
+            server_info_threshold_data = request.data.dict()
+            print(server_info_threshold_data)
+            ServerInfoThreshold.objects.filter(id=1).update(**server_info_threshold_data)
+            # 调用函数使用数据表中的阈值信息刷新缓存的阈值
+            refresh_threshold()
+            return Response(status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class CleanDatabase(APIView):

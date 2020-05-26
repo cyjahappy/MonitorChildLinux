@@ -14,7 +14,7 @@ urlpatterns = [
     path('monitor/iperf3-test-results-to-db', views.iPerfResults_to_Database.as_view()),
     path('monitor/iperf3-test-result-api', views.iPerfResults.as_view()),
     path('monitor/server-info-threshold-api', views.ServerInfoThresholdList.as_view()),
-    url(r'^monitor/server-info-threshold-update/(?P<pk>[0-9]+)/$', views.ServerInfoThresholdUpdate.as_view()),
+    path('monitor/server-info-threshold-update', views.ServerInfoThresholdUpdate.as_view()),
     path('monitor/clean-database-api', views.CleanDatabase.as_view()),
     path('monitor/server-info-minutes', views.DisplayServerInfo.as_view()),
     path('monitor/html-performance-test-results-minutes', views.DisplayHTMLPerformanceTestResults.as_view()),

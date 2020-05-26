@@ -22,23 +22,31 @@ def get_server_info():
     memory = round((memory_used / memory_total) * 100, 2)
     # 磁盘使用率(%)(需要使用"df -h"命令 to list all mounted disk partitions, 然后选择对的那个来获取磁盘使用率)
     disk = psutil.disk_usage("/").percent
-    # 直到当前服务器网络已经上传和下载的MB总和
-    last_network = round((psutil.net_io_counters().bytes_sent + psutil.net_io_counters().bytes_recv) / 1048576, 2)
+
+    # 获取现在的时间
+    t0 = time.time()
+    # 直到当前服务器网络已经上传的Bytes总和
+    last_network_sent = psutil.net_io_counters().bytes_sent
     # 停一秒以便接下来获取这一秒的网络带宽信息
     time.sleep(1)
-    # 直到当前服务器网络已经上传的MB
-    network_recv = round((psutil.net_io_counters().bytes_recv / 1048576), 2)
-    # 直到当前服务器网络已经下载的MB
-    network_sent = round((psutil.net_io_counters().bytes_sent / 1048576), 2)
-    # 得到这一秒服务器网络上传和下载的总和 单位MB
-    network = round((network_sent + network_recv - last_network), 2)
+    # 一秒后, 直到当前服务器网络已经上传的Bytes
+    network_sent = psutil.net_io_counters().bytes_sent
+    # 获取一秒后的时间
+    t1 = time.time()
+    # 得到这一秒服务器上传的Mb总和(上行带宽!!)
+    upstream_bandwidth = (network_sent - last_network_sent) / (t1 - t0)
+    # 转成Mbps
+    network = round(upstream_bandwidth / (1024*1024), 2)
+
+    # 一秒后, 直到当前服务器网络已经下载的Bytes
+    network_recv = psutil.net_io_counters().bytes_recv
     server_info = {'cpu': cpu,
                    'memory': memory,
                    'memory_used': memory_used,
                    'disk': disk,
                    'network': network,
                    'network_recv': network_recv,
-                   'network_sent': network_sent
+                   'network_sent': network_sent,
                    }
     return server_info
 

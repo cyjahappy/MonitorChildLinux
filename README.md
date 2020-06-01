@@ -72,7 +72,7 @@ workon MonitorChildLinux
 deactivate
 ```
 
-#### 服务端iPerf3
+#### 安装服务端的iPerf3, 并配置开机启动
 
 1. 安装iPerf3
 
@@ -111,8 +111,50 @@ sudo systemctl start iperf.service
 
 #### 部署Django Web App项目文件
 
-1. 下载Django Web App项目文件
+1. 从[Realse - CRM监控系统(子服务器端)](https://github.com/cyjahappy/MonitorChildLinux/releases)下载最新Django Web App项目文件
 
+```
+# 这里以v0.1-alpha为例
+wget https://github.com/cyjahappy/MonitorChildLinux/archive/v0.1-alpha.zip
+```
+
+2. 将下载的压缩文件解压在该用户的主目录(这里是/home/cyj)
+
+```
+# 以v0.1-alpha为例
+unzip v0.1-alpha.zip
+
+# 将解压出来的文件夹重命名为MonitorChildLinux(必须与之前创建的虚拟环境的名字一样)
+mv MonitorChildLinux-0.1-alpha MonitorChildLinux
+
+# 最终项目文件的位置应该是/home/cyj/MonitorChildLinux
+```
+
+3. 安装依赖文件
+
+```
+# 进入项目文件的文件夹
+cd /home/cyj/MonitorChildLinux
+
+# 进入刚才创建的名为MonitorChildLinux的虚拟环境
+workon MonitorChildLinux
+
+# 根据requrirements.txt安装依赖文件
+pip3 install -r requirements.txt
+```
+
+4. 将/home/cyj/MonitorChildLinux/MonitorChildLinux/settings.py文件中ALLOWED_HOSTS= ['...']这栏中添加该服务器本机的公网IP地址
+
+```
+# 本例中服务器IP地址为157.245.176.143
+ALLOWED_HOSTS = ['157.245.176.143']
+```
+
+5. 退出虚拟环境
+
+```
+deactivate
+```
 
 #### 安装Chrome浏览器, 及Chrome的浏览器驱动
 
@@ -136,9 +178,106 @@ google-chrome --version
 ```
 # 下载(这里以版本号83.0.4103.39为例)
 wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux64.zip
-
-# 解压得到chromedriver
-unzip chromedriver_linux64.zip
 ```
 
+4. 将下载的压缩包解压到Django Web App项目文件根目录(这里是/home/cyj/MonitorChildLinux)
 
+#### 安装uWSGI, 并配置开机启动
+
+1. 系统级的安装uWSGI(不可在虚拟环境中安装)
+
+```
+pip3 install uwsgi
+
+# 检查版本
+uwsgi --verison 
+```
+
+2. 创建uWSGI的配置文件
+    在/home/cyj/MonitorChildLinux文件夹中创建文件MonitorChildLinux_uwsgi.ini, 并写入以下内容:
+
+```
+# MonitorChildLinux_uwsgi.ini file
+[uwsgi]
+
+# Django-related settings
+# Django Web App项目文件的目录路径 (绝对路径)
+chdir           = /home/cyj/MonitorChildLinux
+# Django的 wsgi 文件(不用更改)
+module          = MonitorChildLinux.wsgi
+# Python虚拟环境的路径 (绝对路径)
+home            = /home/cyj/.virtualenvs/MonitorChildLinux
+
+# process-related settings
+# master
+master          = true
+# 规定运行Django Web App的容器的最大进程数
+processes       = 10
+# the socket (use the full path to be safe)()
+socket          = /home/cyj/MonitorChildLinux/MonitorChildLinux.sock
+# 设置Unix Socket的读写权限
+chmod-socket    = 777
+# clear environment on exit
+vacuum          = true
+```
+
+其中chmod-socket    = 777, 是为了实现 Nginx 调用 uWSGI (以root权限运行的)构建的 Unix socket (所有者和用户组都是root), 同时不让 Nginx 以 root 的身份运行. 
+
+3. 配置Emperor模式的uWSGI
+
+```
+# 为 vassals 创建一个文件夹
+sudo mkdir /etc/uwsgi
+sudo mkdir /etc/uwsgi/vassals
+
+# 将刚才创建的uWSGI配置文件链接到/etc/uwsgi/vassals/
+sudo ln -s /home/cyj/MonitorChildLinux/MonitorChildLinux_uwsgi.ini /etc/uwsgi/vassals/
+```
+
+4. 配置emperor.uwsgi.service
+    在/lib/systemd/system中创建emperor.uwsgi.service, 并写入以下内容:
+
+```
+[Unit]
+Description=uWSGI Emperor
+After=syslog.target
+
+[Service]
+ExecStart=/usr/local/bin/uwsgi --ini /etc/uwsgi/emperor.ini
+# Requires systemd version 211 or newer
+RuntimeDirectory=uwsgi
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
+```
+
+5. 在/etc/uwsgi中创建文件emperor.ini, 并写入以下内容:
+
+```
+[uwsgi]
+emperor = /etc/uwsgi/vassals
+uid = root
+gid = root
+```
+
+6. 运行以下指令
+
+```
+# 重载systemd daemon配置
+sudo systemctl daemon-reload
+
+# 配置uWSGI开机启动
+sudo systemctl enable emperor.uwsgi.service
+
+# 启动uWSGI
+sudo systemctl start emperor.uwsgi.service
+```
+
+#### 配置Nginx
+
+1. 

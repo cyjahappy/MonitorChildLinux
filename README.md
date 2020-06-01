@@ -280,12 +280,11 @@ sudo systemctl start emperor.uwsgi.service
 
 #### 配置Nginx
 
-1. 在/etc/nginx/sites-enabled中创建文件MonitorChildLinux_nginx.conf, 并写入以下内容
+1. 在/etc/nginx/sites-enabled中创建文件MonitorChildLinux_nginx.conf, 并写入以下内容:
 
 ```
 # MonitorChildLinux_nginx.conf
-  
-# the upstream component nginx needs to connect to
+
 upstream django {
     server unix:///home/cyj/MonitorChildLinux/MonitorChildLinux.sock; # for a file socket
 }
@@ -295,13 +294,11 @@ server {
     # the port your site will be served on
     listen      80;
     # the domain name it will serve for
-    server_name 157.245.176.143; # substitute your machine's IP address or FQDN
+    server_name 157.245.176.143; # 将server_name后面的IP地址换为该服务器本机的IP地址
     charset     utf-8;
 
-    # max upload size
     client_max_body_size 75M;   # adjust to taste
 
-    # Finally, send all non-media requests to the Django server.
     location / {
         uwsgi_pass  django;
         include     /home/cyj/MonitorChildLinux/uwsgi_params; # the uwsgi_params file you installed

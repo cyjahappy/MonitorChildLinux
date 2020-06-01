@@ -61,7 +61,7 @@ source ~/.bashrc
 mkvirtualenv MonitorChildLinux
 ```
 
-相关命令:
+    相关命令:
 
 ```
 # 切换到MonitorChildLinux环境
@@ -69,4 +69,38 @@ workon MonitorChildLinux
 
 # 退出虚拟环境
 deactivate
+```
+
+#### 服务端iPerf3
+1. 安装iPerf3
+
+```
+sudo apt install iperf3
+```
+
+2. 配置Systemd
+
+    在/lib/systemd/system中创建文件iperf.service, 并在文件中加入以下内容
+
+```
+[Unit]
+Description=iperf server
+After=syslog.target network.target auditd.service
+
+[Service]
+ExecStart=/usr/bin/iperf3 -s
+
+[Install]
+WantedBy=multi-user.target
+```
+
+    运行以下指令
+
+```
+# 重载systemd daemon配置
+sudo systemctl daemon-reload
+# 配置iPerf3开机启动
+sudo systemctl enable iperf.service
+# 启动服务端iPerf3
+sudo systemctl start iperf.service
 ```

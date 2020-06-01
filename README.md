@@ -61,9 +61,9 @@ source ~/.bashrc
 mkvirtualenv MonitorChildLinux
 ```
 
-    相关命令:
 
 ```
+# 相关命令:
 # 切换到MonitorChildLinux环境
 workon MonitorChildLinux
 

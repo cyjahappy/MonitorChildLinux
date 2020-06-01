@@ -150,7 +150,9 @@ pip3 install -r requirements.txt
 ALLOWED_HOSTS = ['157.245.176.143']
 ```
 
-5. 退出虚拟环境
+5. 将/home/cyj/MonitorChildLinux/db.sqlite3中Monitor_serverlist表中加入所有子服务器的IP地址
+
+6. 退出虚拟环境
 
 ```
 deactivate

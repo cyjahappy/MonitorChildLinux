@@ -75,12 +75,30 @@ number_of_data = 10
 time_zone = pytz.timezone('Asia/Shanghai')
 
 
+def get_database_ping_test_result_minutes(server_ip):
+    database_ping_test_result_minutes = {
+        'result': [],
+        'date': [],
+    }
+    PingResultsQuerySet = PingResults.objects.filter(server_ip_id=server_ip)
+    QuerySetLength = PingResultsQuerySet.count()
+    PingResultsData = PingResultsQuerySet[QuerySetLength - number_of_data:QuerySetLength]
+
+    # 只有QuerySet不为空,才会进行取值
+    if PingResultsData.exists():
+        i = 0
+        while i < number_of_data:
+            database_ping_test_result_minutes['result'].append(PingResultsData[0].result)
+            # 转换时区
+            database_ping_test_result_minutes['date'].append(
+                PingResultsData[0].date.astimezone(time_zone).strftime('%H:%M'))
+            i = i + 1
+    return database_ping_test_result_minutes
+
+
+"""
 # 以分钟为单位从数据库中取值
 def get_database_ping_test_result_minutes(server_ip):
-    """
-    以分钟为单位从数据库中取值
-    :return: 存储前十分钟系统各项指标的字典
-    """
 
     # 获取今天的日期
     now = datetime.now()
@@ -115,7 +133,7 @@ def get_database_ping_test_result_minutes(server_ip):
         i = i - 1
 
     return database_ping_test_result_minutes
-
+"""
 
 '''
 # 从PingList中提取所有的需要ping的IP, ping一遍之后返回ping的结果的字典(给前端实时用表格展示结果使用的)

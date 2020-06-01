@@ -36,7 +36,7 @@ def get_server_info():
     # 得到这一秒服务器上传的Mb总和(上行带宽!!)
     upstream_bandwidth = (network_sent - last_network_sent) / (t1 - t0)
     # 转成Mbps
-    network = round(upstream_bandwidth / (1024*1024), 2)
+    network = round(upstream_bandwidth / (1024 * 1024), 2)
 
     # 一秒后, 直到当前服务器网络已经下载的Bytes
     network_recv = psutil.net_io_counters().bytes_recv
@@ -76,13 +76,40 @@ number_of_data = 10
 time_zone = pytz.timezone('Asia/Shanghai')
 
 
-# 以分钟为单位从数据库中取值
 def get_database_server_info_minutes():
-    """
-    以分钟为单位从数据库中取值
-    :return: 存储前十分钟系统各项指标的字典
-    """
+    global number_of_data
+    database_server_info_minutes = {
+        'cpu': [],
+        'memory': [],
+        'disk': [],
+        'network': [],
+        'network_recv': [],
+        'network_sent': [],
+        'date': []
+    }
+    data = ServerInfo.objects.all()
+    length = data.count()
+    results = data[length - number_of_data:length]
 
+    i = 0
+    while i < number_of_data:
+        database_server_info_minutes['cpu'].append(results[i].cpu)
+        database_server_info_minutes['memory'].append(results[i].memory)
+        database_server_info_minutes['disk'].append(results[i].disk)
+        database_server_info_minutes['network'].append(results[i].network)
+        database_server_info_minutes['network_recv'].append(results[i].network_recv)
+        database_server_info_minutes['network_sent'].append(results[i].network_sent)
+        # 转换时区
+        database_server_info_minutes['date'].append(results[i].date.astimezone(time_zone).strftime('%H:%M'))
+        i = i + 1
+    return database_server_info_minutes
+
+
+"""
+
+# 对指定的时间点取值, 但是耗费更多计算资源
+def get_database_server_info_minutes():
+    
     # 获取今天的日期
     now = datetime.now()
     database_server_info_minutes = {
@@ -124,3 +151,4 @@ def get_database_server_info_minutes():
 
         i = i - 1
     return database_server_info_minutes
+"""

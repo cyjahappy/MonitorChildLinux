@@ -90,12 +90,36 @@ number_of_data = 10
 time_zone = pytz.timezone('Asia/Shanghai')
 
 
+def get_database_iperf3_test_result_minutes(server_ip):
+    database_iperf3_test_result_minutes = {
+        'sent_Mbps': [],
+        'received_Mbps': [],
+        'tcp_mss_default': [],
+        'retransmits': [],
+        'date': [],
+    }
+    iPerfTestResultsQuerySet = iPerfTestResults.objects.filter(server_ip_id=server_ip)
+    QuerySetLength = iPerfTestResultsQuerySet.count()
+    iPerfTestResultsData = iPerfTestResultsQuerySet[QuerySetLength - number_of_data:QuerySetLength]
+
+    # 只有QuerySet不为空,才会进行取值
+    if iPerfTestResultsData.exists():
+        i = 0
+        while i < number_of_data:
+            database_iperf3_test_result_minutes['sent_Mbps'].append(iPerfTestResultsData[i].sent_Mbps)
+            database_iperf3_test_result_minutes['received_Mbps'].append(iPerfTestResultsData[i].received_Mbps)
+            database_iperf3_test_result_minutes['tcp_mss_default'].append(iPerfTestResultsData[i].tcp_mss_default)
+            database_iperf3_test_result_minutes['retransmits'].append(iPerfTestResultsData[i].retransmits)
+            # 转换时区
+            database_iperf3_test_result_minutes['date'].append(
+                iPerfTestResultsData[i].date.astimezone(time_zone).strftime('%H:%M'))
+            i = i + 1
+    return database_iperf3_test_result_minutes
+
+
+"""
 # 以分钟为单位从数据库中取值
 def get_database_iperf3_test_result_minutes(server_ip):
-    """
-    以分钟为单位从数据库中取值
-    :return: 存储前十分钟系统各项指标的字典
-    """
 
     # 获取今天的日期
     now = datetime.now()
@@ -136,3 +160,4 @@ def get_database_iperf3_test_result_minutes(server_ip):
         i = i - 1
 
     return database_iperf3_test_result_minutes
+"""

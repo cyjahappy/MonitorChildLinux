@@ -73,6 +73,7 @@ deactivate
 ```
 
 #### 服务端iPerf3
+
 1. 安装iPerf3
 
 ```
@@ -107,3 +108,37 @@ sudo systemctl enable iperf.service
 # 启动服务端iPerf3
 sudo systemctl start iperf.service
 ```
+
+#### 部署Django Web App项目文件
+
+1. 下载Django Web App项目文件
+
+
+#### 安装Chrome浏览器, 及Chrome的浏览器驱动
+
+1. 从官网下载Google Chrome
+
+```
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+```
+
+2. 安装Google Chrome
+
+```
+sudo apt install ./google-chrome-stable_current_amd64.deb
+
+# 确认浏览器的版本
+google-chrome --version
+```
+
+3. 从[ChromeDriver - WebDriver for Chrome](https://chromedriver.chromium.org/downloads)中找到对应Chrome版本的驱动, 并下载
+
+```
+# 下载(这里以版本号83.0.4103.39为例)
+wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux64.zip
+
+# 解压得到chromedriver
+unzip chromedriver_linux64.zip
+```
+
+

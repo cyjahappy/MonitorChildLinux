@@ -94,7 +94,7 @@ ExecStart=/usr/bin/iperf3 -s
 WantedBy=multi-user.target
 ```
 
-    运行以下指令
+3. 运行以下指令
 
 ```
 # 重载systemd daemon配置

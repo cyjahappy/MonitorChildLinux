@@ -1,6 +1,297 @@
 # MonitorChildLinux
 CRM服务器监控系统(子服务器端)
 
+## API示例
+
+### 获取子服务器当前系统各项指标信息
+#### Request
+- Method: **GET**
+- URL: ```monitor/server-info-api```
+- Headers： Content-Type:application/json
+
+#### Response
+- Body
+
+```
+{
+    "cpu": 1.0,
+    "memory": 40.52,
+    "disk": 9.4,
+    "network": 0.0,
+    "network_recv": 383482123.0,
+    "network_sent": 37618359.0
+}
+```
+
+### 使子服务器自行检测系统各项指标,检查是否超过阈值, 并将检测结果存入子服务器数据库
+#### Request
+- Method: **GET**
+- URL: ```/monitor/server-info-to-db```
+
+### 使子服务器针对指定IP地址进行Ping操作, 并获取Ping结果
+#### Request
+- Method: **POST**
+- URL: ```monitor/ping-results-api```
+- Headers： Content-Type:application/json
+- Body:
+
+```
+{
+    "server_ip": "129.204.183.108"
+}
+```
+
+### 获取该子服务器前十分钟系统各项指标检测的结果
+#### Request
+- Method: **GET**
+- URL: ```/monitor/server-info-minutes```
+- Headers： Content-Type:application/json
+
+#### Response
+- Body:
+
+```
+{
+    "cpu":[1.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0],
+    "memory":[49.89,49.89,49.89,49.89,49.89,49.89,49.89,49.89,49.89,49.89],
+    "disk":[13.8,13.8,13.8,13.8,13.8,13.8,13.8,13.8,13.8,13.8],
+    "network":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],
+    "network_recv":[22378210424.0,22382711228.0,22387134029.0,22387377802.0,22391875957.0,22392142825.0,22396386350.0,
+                    22401030296.0,22405639549.0,22410102115.0],
+    "network_sent":[922139713268.0,922312819330.0,922485208963.0,922658390089.0,922832485908.0,923006174129.0,923180170098.0,
+                    923354326663.0,923527690366.0,923701863219.0],
+    "date":["09:34","09:35","09:36","09:37","09:38","09:39","09:40","09:41","09:42","09:43"]
+}
+```
+
+#### Response
+- Body:
+
+```
+{
+    "server_ip":"129.204.183.108","result":0.2417
+}
+```
+
+### 使该子服务器对其余所有子服务器进行Ping操作, 检查结果是否超过阈值, 并将检测结果存入子服务器数据库
+#### Request
+- Method: **GET**
+- URL: ```/monitor/ping-results-to-db```
+
+### 获取该子服务器对指定IP地址前10分钟Ping的结果和时间
+#### Request
+- Method: **POST**
+- URL: ```/monitor/ping-results-minutes```
+- Headers： Content-Type:application/json
+- Body:
+
+```
+{
+    "server_ip": "129.204.183.108"
+}
+```
+
+#### Response
+- Body:
+
+```
+{
+    "result":[0.1584,0.1584,0.1584,0.1584,0.1584,0.1584,0.1584,0.1584,0.1584,0.1584],
+    "date":["09:03","09:03","09:03","09:03","09:03","09:03","09:03","09:03","09:03","09:03"]
+}
+```
+
+### 获取该子服务器对指定URL进行前端性能测试的结果
+#### Request
+- Method: **POST**
+- URL: ```/monitor/html-performance-test-result-api```
+- Headers： Content-Type:application/json
+- Body:
+
+```
+{
+    "url": "https://apple.com.cn"
+}
+```
+
+#### Response 
+- Body:
+
+```
+{
+    "dns_query":0.008,
+    "tcp_connection":0.015,
+    "request":0.002,
+    "dom_parse":0.479,
+    "blank_screen":2.376,
+    "onload":3.398,
+    "dom_ready":2.899
+}
+```
+
+### 获取该子服务器对指定URL前十分钟进行前端性能测试的结果
+#### Request
+- Method: **POST**
+- URL: ```/monitor/html-performance-test-results-minutes```
+- Headers： Content-Type:application/json
+- Body:
+
+```
+{
+    "url": "https://apple.com.cn"
+}
+```
+
+#### Response
+- Body:
+
+```
+{
+    "dns_query":[0.01,0.008,0.002,0.013,0.001,0.002,0.001,0.003,0.018,0.001],
+    "tcp_connection":[0.012,0.014,0.012,0.014,0.013,0.013,0.014,0.014,0.013,0.012],
+    "request":[0.002,0.002,0.002,0.002,0.002,0.003,0.003,0.002,0.003,0.002],
+    "dom_parse":[0.335,0.54,0.315,0.325,0.221,0.279,0.56,0.433,0.287,0.346],
+    "blank_screen":[0.114,0.103,0.103,0.177,0.107,0.117,0.999,2.749,0.118,0.096],
+    "dom_ready":[0.63,0.587,0.609,0.667,0.762,0.631,1.503,3.238,0.647,0.586],
+    "onload":[0.999,1.143,0.956,1.023,0.998,0.941,2.085,3.695,0.967,0.969],
+    "date":["09:05","09:07","09:08","09:12","09:13","09:14","09:15","09:18","09:19","09:21"]
+}
+```
+
+### 使该子服务器对数据库中存储的所有需要进行测试的URL地址进行前端性能测试, 检测结果是否超过阈值, 并将结果存入数据库
+#### Request
+- Method: **GET**
+- URL: ```/monitor/html-performance-test-results-to-db```
+
+### 获取该子服务器对指定IP地址进行iPerf测试的结果
+#### Request
+- Method: **POST**
+- URL: ```/monitor/iperf3-test-result-api```
+- Headers： Content-Type:application/json
+- Body:
+
+```
+{
+    "server_ip": "129.204.183.108"
+}
+```
+
+#### Response
+- Body:
+
+```
+{
+    "server_ip":"129.204.183.108",
+    "sent_Mbps":4.65,
+    "received_Mbps":4.19,
+    "retransmits":0.0,
+    "tcp_mss_default":1412.0
+}
+```
+
+### 使该子服务器对其余所有子服务器进行iPerf测试, 检查结果是否超过阈值, 并将检测结果存入子服务器数据库
+#### Request
+- Method: **GET**
+- URL: ```/monitor/iperf3-test-results-to-db```
+
+### 获取该子服务器对指定IP地址前十分钟进行iPerf测试的结果
+#### Request
+- Method: **POST**
+- URL: ```/monitor/iperf-test-results-minutes```
+- Headers： Content-Type:application/json
+- Body:
+
+```
+{
+    "server_ip": "129.204.183.108",
+}
+```
+
+#### Response
+- Body:
+
+```
+{
+    "sent_Mbps":[4.45,5.84,7.46,5.95,6.73,5.25,4.86,7.28,7.52,4.36],
+    "received_Mbps":[3.99,5.23,6.68,5.34,6.04,4.75,4.4,6.53,6.79,3.97],
+    "tcp_mss_default":[1412.0,1412.0,1412.0,1412.0,1412.0,1412.0,1412.0,1412.0,1412.0,1412.0],
+    "retransmits":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],
+    "date":["09:18","09:19","09:21","09:22","09:23","09:25","09:26","09:27","09:29","09:30"]
+}
+```
+
+### 获取该子服务器数据库中的阈值
+#### Request
+- Method: **GET**
+- URL: ```/monitor/server-info-threshold-api```
+- Headers： Content-Type:application/json
+
+#### Response
+- Body:
+
+```
+{
+    "cpu_threshold":87.0,
+    "memory_threshold":99.0,
+    "disk_threshold":98.0,
+    "bandwidth_threshold":280.0,
+    "HTML_open_time_threshold":88.0,
+    "tcp_sent_Mbps_threshold":88.0,
+    "tcp_received_Mbps_threshold":88.0,
+    "microservices_exec_time_threshold":88.0,
+    "backend_management_system_open_time_threshold":88.0,
+    "ping_threshold":88.0
+}
+```
+
+### 更新该子服务器数据库中的阈值
+#### Request
+- Method: **POST**
+- URL: ```/monitor/server-info-threshold-update```
+- Headers： Content-Type:application/json
+- Body:
+
+```
+{
+    "cpu_threshold":87.0,
+    "memory_threshold":99.0,
+    "disk_threshold":98.0,
+    "bandwidth_threshold":280.0,
+    "HTML_open_time_threshold":88.0,
+    "tcp_sent_Mbps_threshold":88.0,
+    "tcp_received_Mbps_threshold":88.0,
+    "microservices_exec_time_threshold":88.0,
+    "backend_management_system_open_time_threshold":88.0,
+    "ping_threshold":88.0
+}
+```
+
+### 清理该子服务器数据库中2天前当天的数据
+#### Request
+- Method: **GET**
+- URL: ```/monitor/clean-database-api```
+
+### 获取该子服务器数据库中存储的其他子服务器的IP地址列表
+#### Request
+- Method: **GET**
+- URL: ```/monitor/target-server-list``
+- Headers： Content-Type:application/json
+
+#### Response
+- Body:
+
+```
+[
+    {
+        "server_ip":"129.204.183.108",
+        "server_name":"TencentCloud"
+    },
+    {
+        "server_ip":"68.183.238.127",
+        "server_name":"Singapore"
+    }
+]
+```
 ## 部署(Ubuntu 18.04)
 
 #### 创建一个用于运行CRM服务器监控系统子服务器端Django Web App的用户

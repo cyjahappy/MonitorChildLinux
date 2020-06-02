@@ -167,7 +167,6 @@ class ServerInfoThresholdUpdate(APIView):
     def post(self, request):
         try:
             server_info_threshold_data = request.data.dict()
-            print(server_info_threshold_data)
             ServerInfoThreshold.objects.filter(id=1).update(**server_info_threshold_data)
             # 调用函数使用数据表中的阈值信息刷新缓存的阈值
             refresh_threshold()

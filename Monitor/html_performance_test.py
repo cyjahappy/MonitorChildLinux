@@ -1,5 +1,4 @@
 import pytz
-from datetime import datetime, timedelta
 from selenium import webdriver
 from .models import HTMLTestList, HTMLTestResults
 from .threshold_check import html_performance_check, html_performance_alert

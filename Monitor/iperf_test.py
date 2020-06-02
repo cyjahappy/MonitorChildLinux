@@ -1,6 +1,5 @@
 import iperf3
 import pytz
-from datetime import datetime, timedelta
 from .models import ServerList, iPerfTestResults
 from .threshold_check import iperf_check, iperf_alert
 

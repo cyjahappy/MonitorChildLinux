@@ -1,5 +1,4 @@
 import pytz
-from datetime import datetime, timedelta
 from ping3 import ping
 from .models import ServerList, PingResults
 from .threshold_check import ping_check, ping_alert

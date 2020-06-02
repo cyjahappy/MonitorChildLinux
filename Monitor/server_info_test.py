@@ -4,7 +4,6 @@ import time
 import pytz
 from .models import ServerInfo
 from .threshold_check import server_info_check
-from datetime import datetime, timedelta
 
 
 def get_server_info():

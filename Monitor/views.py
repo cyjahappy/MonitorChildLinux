@@ -247,3 +247,22 @@ class DisplayPingTestResults(APIView):
             return Response(database_ping_test_result_minutes, status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class UpdateServerList(APIView):
+    """
+    接收所有子服务器IP地址组成的列表, 用以更新本服务器的ServerList表
+    """
+
+    def post(self, request):
+        try:
+            server_ip_list_QueryDict = request.data
+            server_ip_list = server_ip_list_QueryDict.getlist('server_ip_list')
+            print(server_ip_list)
+            ServerList.objects.all().delete()
+            for server_ip in server_ip_list:
+                d = dict(server_ip=server_ip)
+                ServerList.objects.create(**d)
+            return Response(status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -15,7 +15,7 @@ class ServerInfo(models.Model):
 # 存储除本机以外所有CRM服务器的IP地址
 class ServerList(models.Model):
     server_ip = models.GenericIPAddressField(primary_key=True)
-    server_name = models.CharField(null=True, max_length=20)
+    server_name = models.CharField(default='Child Server', max_length=20)
 
 
 # 存储Ping的结果

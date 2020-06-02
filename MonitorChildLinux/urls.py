@@ -1,7 +1,6 @@
 from django.urls import path
 from Monitor import views
 from rest_framework.urlpatterns import format_suffix_patterns
-from django.conf.urls import url
 
 urlpatterns = [
     path('monitor/server-info-api', views.ServerInfoList.as_view()),
@@ -20,6 +19,7 @@ urlpatterns = [
     path('monitor/html-performance-test-results-minutes', views.DisplayHTMLPerformanceTestResults.as_view()),
     path('monitor/iperf-test-results-minutes', views.DisplayIPerfTestResults.as_view()),
     path('monitor/target-server-list', views.TargetServerList.as_view()),
+    path('monitor/update-server-list', views.UpdateServerList.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

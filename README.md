@@ -274,7 +274,7 @@ CRM服务器监控系统(子服务器端)
 ### 获取该子服务器数据库中存储的其他子服务器的IP地址列表
 #### Request
 - Method: **GET**
-- URL: ```/monitor/target-server-list``
+- URL: ```/monitor/target-server-list```
 - Headers： Content-Type:application/json
 
 #### Response

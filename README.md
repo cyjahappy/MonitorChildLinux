@@ -215,7 +215,7 @@ home            = /home/cyj/.virtualenvs/MonitorChildLinux
 master          = true
 # 规定运行Django Web App的容器的最大进程数
 processes       = 10
-# the socket (use the full path to be safe)()
+# 指向生成的Unix Socket路径(之后给Nginx调用)(绝对路径)
 socket          = /home/cyj/MonitorChildLinux/MonitorChildLinux.sock
 # 设置Unix Socket的读写权限
 chmod-socket    = 777
@@ -223,7 +223,7 @@ chmod-socket    = 777
 vacuum          = true
 ```
 
-其中chmod-socket    = 777, 是为了实现 Nginx 调用 uWSGI (以root权限运行的)构建的 Unix socket (所有者和用户组都是root), 同时不让 Nginx 以 root 的身份运行. 
+其中chmod-socket    = 777, 是为了使 Nginx 可以调用 uWSGI (以root权限运行的)构建的 Unix socket (所有者和用户组都是root)的同时, Nginx可以不以root的身份运行. 
 
 3. 配置Emperor模式的uWSGI
 
@@ -267,6 +267,8 @@ uid = root
 gid = root
 ```
 
+其中将uWSGI的进程用户和用户组设置为root. 因为Python中构建raw socket需要root权限(实现PING检测需要构建ICMP报文, 构建ICMP报文需要构建raw socket).
+
 6. 运行以下指令
 
 ```
@@ -288,7 +290,7 @@ sudo systemctl start emperor.uwsgi.service
 # MonitorChildLinux_nginx.conf
 
 upstream django {
-    server unix:///home/cyj/MonitorChildLinux/MonitorChildLinux.sock; # for a file socket
+    server unix:///home/cyj/MonitorChildLinux/MonitorChildLinux.sock; # 指向项目目录中的Unix socket(运行uWSGI后会自动生成)
 }
 
 # configuration of the server
@@ -303,7 +305,7 @@ server {
 
     location / {
         uwsgi_pass  django;
-        include     /home/cyj/MonitorChildLinux/uwsgi_params; # the uwsgi_params file you installed
+        include     /home/cyj/MonitorChildLinux/uwsgi_params; # 指向uwsgi_params
     }
 }
 ```

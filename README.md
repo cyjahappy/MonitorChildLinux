@@ -473,7 +473,7 @@ google-chrome --version
 wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux64.zip
 ```
 
-4. 将下载的压缩包解压到Django Web App项目文件根目录(这里是/home/cyj/MonitorChildLinux)
+4. 将下载的压缩包解压到项目Python虚拟环境的文件夹内中的bin中(这里是/home/cyj/.virtualenvs/MonitorChildLinux/bin/chromedriver)
 
 #### 安装uWSGI, 并配置开机启动
 

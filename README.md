@@ -303,17 +303,19 @@ CRM服务器监控系统(子服务器端)
 adduser cyj
 ```
 
-```
-# 切换到用户cyj
-su cyj
-```
-
 2. 赋予用户sudo权限:
 
     /etc/sudoers 追加一行(需要用强制保存)
 
 ```
 cyj ALL=NOPASSWD: ALL
+```
+
+3. 切换到用户
+
+```
+# 切换到用户cyj
+su cyj
 ```
 
 #### 创建独立的Python虚拟环境

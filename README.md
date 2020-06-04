@@ -300,7 +300,7 @@ CRM服务器监控系统(子服务器端)
 
 ```
 # 以cyj为例
-adduser cyj
+$ adduser cyj
 ```
 
 2. 赋予用户sudo权限:
@@ -315,7 +315,7 @@ cyj ALL=NOPASSWD: ALL
 
 ```
 # 切换到用户cyj
-su cyj
+$ su cyj
 ```
 
 #### 创建独立的Python虚拟环境
@@ -323,14 +323,14 @@ su cyj
 1. 安装virtualenv和virtualenvwrapper
 
 ```
-pip3 install virtualenv
-pip3 install virtualenvwrapper
+$ pip3 install virtualenv
+$ pip3 install virtualenvwrapper
 ```
 
 2. 创建目录用来存放虚拟环境
 
 ```
-mkdir $HOME/.virtualenvs
+$ mkdir $HOME/.virtualenvs
 ```
 
 3. 打开~/.bashrc文件，并添加内容：
@@ -345,13 +345,13 @@ source ~/.local/bin/virtualenvwrapper.sh
 4. 重新加载配置
 
 ```
-source ~/.bashrc
+$ source ~/.bashrc
 ```
 
 5. 创建用于运行CRM服务器监控系统子服务器端Django Web App的Python虚拟环境
 
 ```
-mkvirtualenv MonitorChildLinux
+$ mkvirtualenv MonitorChildLinux
 ```
 
 
@@ -359,10 +359,10 @@ mkvirtualenv MonitorChildLinux
 # 相关命令:
 
 # 切换到MonitorChildLinux环境
-workon MonitorChildLinux
+$ workon MonitorChildLinux
 
 # 退出虚拟环境
-deactivate
+$ deactivate
 ```
 
 #### 安装服务端的iPerf3, 并配置开机启动

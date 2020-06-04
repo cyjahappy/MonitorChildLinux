@@ -69,29 +69,31 @@ def ping_result_to_database():
     return
 
 
-# 定义在前端图表中一次性展示的数据量
-number_of_data = 10
 time_zone = pytz.timezone('Asia/Shanghai')
 
 
 def get_database_ping_test_result_minutes(server_ip):
+    # 定义在前端图表中一次性展示的数据量
+    number_of_data = 10
+
     database_ping_test_result_minutes = {
         'result': [],
         'date': [],
     }
     PingResultsQuerySet = PingResults.objects.filter(server_ip_id=server_ip)
     QuerySetLength = PingResultsQuerySet.count()
-    PingResultsData = PingResultsQuerySet[QuerySetLength - number_of_data:QuerySetLength]
-
-    # 只有QuerySet不为空,才会进行取值
-    if PingResultsData.exists():
-        i = 0
-        while i < number_of_data:
-            database_ping_test_result_minutes['result'].append(PingResultsData[0].result)
-            # 转换时区
-            database_ping_test_result_minutes['date'].append(
-                PingResultsData[0].date.astimezone(time_zone).strftime('%H:%M'))
-            i = i + 1
+    if QuerySetLength >= number_of_data:
+        PingResultsData = PingResultsQuerySet[QuerySetLength - number_of_data:QuerySetLength]
+    else:
+        number_of_data = QuerySetLength
+        PingResultsData = PingResultsQuerySet[:QuerySetLength]
+    i = 0
+    while i < number_of_data:
+        database_ping_test_result_minutes['result'].append(PingResultsData[0].result)
+        # 转换时区
+        database_ping_test_result_minutes['date'].append(
+            PingResultsData[0].date.astimezone(time_zone).strftime('%H:%M'))
+        i = i + 1
     return database_ping_test_result_minutes
 
 

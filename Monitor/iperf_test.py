@@ -84,12 +84,13 @@ def iperf3_result_to_database():
     return
 
 
-# 定义在前端图表中一次性展示的数据量
-number_of_data = 10
 time_zone = pytz.timezone('Asia/Shanghai')
 
 
 def get_database_iperf3_test_result_minutes(server_ip):
+    # 定义在前端图表中一次性展示的数据量
+    number_of_data = 10
+
     database_iperf3_test_result_minutes = {
         'sent_Mbps': [],
         'received_Mbps': [],
@@ -99,20 +100,22 @@ def get_database_iperf3_test_result_minutes(server_ip):
     }
     iPerfTestResultsQuerySet = iPerfTestResults.objects.filter(server_ip_id=server_ip)
     QuerySetLength = iPerfTestResultsQuerySet.count()
-    iPerfTestResultsData = iPerfTestResultsQuerySet[QuerySetLength - number_of_data:QuerySetLength]
+    if QuerySetLength >= number_of_data:
+        iPerfTestResultsData = iPerfTestResultsQuerySet[QuerySetLength - number_of_data:QuerySetLength]
+    else:
+        number_of_data = QuerySetLength
+        iPerfTestResultsData = iPerfTestResultsQuerySet[:QuerySetLength]
 
-    # 只有QuerySet不为空,才会进行取值
-    if iPerfTestResultsData.exists():
-        i = 0
-        while i < number_of_data:
-            database_iperf3_test_result_minutes['sent_Mbps'].append(iPerfTestResultsData[i].sent_Mbps)
-            database_iperf3_test_result_minutes['received_Mbps'].append(iPerfTestResultsData[i].received_Mbps)
-            database_iperf3_test_result_minutes['tcp_mss_default'].append(iPerfTestResultsData[i].tcp_mss_default)
-            database_iperf3_test_result_minutes['retransmits'].append(iPerfTestResultsData[i].retransmits)
-            # 转换时区
-            database_iperf3_test_result_minutes['date'].append(
-                iPerfTestResultsData[i].date.astimezone(time_zone).strftime('%H:%M'))
-            i = i + 1
+    i = 0
+    while i < number_of_data:
+        database_iperf3_test_result_minutes['sent_Mbps'].append(iPerfTestResultsData[i].sent_Mbps)
+        database_iperf3_test_result_minutes['received_Mbps'].append(iPerfTestResultsData[i].received_Mbps)
+        database_iperf3_test_result_minutes['tcp_mss_default'].append(iPerfTestResultsData[i].tcp_mss_default)
+        database_iperf3_test_result_minutes['retransmits'].append(iPerfTestResultsData[i].retransmits)
+        # 转换时区
+        database_iperf3_test_result_minutes['date'].append(
+            iPerfTestResultsData[i].date.astimezone(time_zone).strftime('%H:%M'))
+        i = i + 1
     return database_iperf3_test_result_minutes
 
 

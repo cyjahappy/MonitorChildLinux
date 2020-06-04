@@ -70,13 +70,13 @@ def server_info_to_database():
     return
 
 
-# 定义在前端图表中一次性展示的数据量
-number_of_data = 10
 time_zone = pytz.timezone('Asia/Shanghai')
 
 
 def get_database_server_info_minutes():
-    global number_of_data
+    # 定义在前端图表中一次性展示的数据量
+    number_of_data = 10
+
     database_server_info_minutes = {
         'cpu': [],
         'memory': [],
@@ -88,8 +88,11 @@ def get_database_server_info_minutes():
     }
     data = ServerInfo.objects.all()
     length = data.count()
-    results = data[length - number_of_data:length]
-
+    if length >= number_of_data:
+        results = data[length - number_of_data:length]
+    else:
+        number_of_data = length
+        results = data[:length]
     i = 0
     while i < number_of_data:
         database_server_info_minutes['cpu'].append(results[i].cpu)

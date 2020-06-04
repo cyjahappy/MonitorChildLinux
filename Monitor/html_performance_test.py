@@ -110,13 +110,13 @@ def html_performance_test_to_database():
     return
 
 
-# 定义在前端图表中一次性展示的数据量
-number_of_data = 10
 time_zone = pytz.timezone('Asia/Shanghai')
 
 
 def get_database_html_performance_test_result_minutes(url):
-    global number_of_data
+    # 定义在前端图表中一次性展示的数据量
+    number_of_data = 10
+
     database_html_performance_test_result_minutes = {
         'dns_query': [],
         'tcp_connection': [],
@@ -129,24 +129,26 @@ def get_database_html_performance_test_result_minutes(url):
     }
     HTMLTestResultsQuerySet = HTMLTestResults.objects.filter(url_id=url)
     QuerySetLength = HTMLTestResultsQuerySet.count()
-    HTMLTestResultsData = HTMLTestResultsQuerySet[QuerySetLength - number_of_data:QuerySetLength]
+    if QuerySetLength >= number_of_data:
+        HTMLTestResultsData = HTMLTestResultsQuerySet[QuerySetLength - number_of_data:QuerySetLength]
+    else:
+        number_of_data = QuerySetLength
+        HTMLTestResultsData = HTMLTestResultsQuerySet[:QuerySetLength]
 
-    # 只有QuerySet不为空,才会进行取值
-    if HTMLTestResultsData.exists():
-        i = 0
-        while i < number_of_data:
-            database_html_performance_test_result_minutes['dns_query'].append(HTMLTestResultsData[i].dns_query)
-            database_html_performance_test_result_minutes['tcp_connection'].append(
-                HTMLTestResultsData[i].tcp_connection)
-            database_html_performance_test_result_minutes['request'].append(HTMLTestResultsData[i].request)
-            database_html_performance_test_result_minutes['dom_parse'].append(HTMLTestResultsData[i].dom_parse)
-            database_html_performance_test_result_minutes['blank_screen'].append(HTMLTestResultsData[i].blank_screen)
-            database_html_performance_test_result_minutes['dom_ready'].append(HTMLTestResultsData[i].dom_ready)
-            database_html_performance_test_result_minutes['onload'].append(HTMLTestResultsData[i].onload)
-            # 转换时区
-            database_html_performance_test_result_minutes['date'].append(
-                HTMLTestResultsData[i].date.astimezone(time_zone).strftime('%H:%M'))
-            i = i + 1
+    i = 0
+    while i < number_of_data:
+        database_html_performance_test_result_minutes['dns_query'].append(HTMLTestResultsData[i].dns_query)
+        database_html_performance_test_result_minutes['tcp_connection'].append(
+            HTMLTestResultsData[i].tcp_connection)
+        database_html_performance_test_result_minutes['request'].append(HTMLTestResultsData[i].request)
+        database_html_performance_test_result_minutes['dom_parse'].append(HTMLTestResultsData[i].dom_parse)
+        database_html_performance_test_result_minutes['blank_screen'].append(HTMLTestResultsData[i].blank_screen)
+        database_html_performance_test_result_minutes['dom_ready'].append(HTMLTestResultsData[i].dom_ready)
+        database_html_performance_test_result_minutes['onload'].append(HTMLTestResultsData[i].onload)
+        # 转换时区
+        database_html_performance_test_result_minutes['date'].append(
+            HTMLTestResultsData[i].date.astimezone(time_zone).strftime('%H:%M'))
+        i = i + 1
     return database_html_performance_test_result_minutes
 
 

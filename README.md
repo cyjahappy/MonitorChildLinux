@@ -303,17 +303,19 @@ CRM服务器监控系统(子服务器端)
 adduser cyj
 ```
 
-```
-# 切换到用户cyj
-su cyj
-```
-
 2. 赋予用户sudo权限:
 
     /etc/sudoers 追加一行(需要用强制保存)
 
 ```
 cyj ALL=NOPASSWD: ALL
+```
+
+3. 切换到用户
+
+```
+# 切换到用户cyj
+su cyj
 ```
 
 #### 创建独立的Python虚拟环境
@@ -473,7 +475,7 @@ $ google-chrome --version
 $ wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux64.zip
 ```
 
-4. 将下载的压缩包解压到Django Web App项目文件根目录(这里是/home/cyj/MonitorChildLinux)
+4. 将下载的压缩包解压到项目Python虚拟环境的文件夹内中的bin中(这里是/home/cyj/.virtualenvs/MonitorChildLinux/bin/chromedriver)
 
 #### 安装uWSGI, 并配置开机启动
 

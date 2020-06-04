@@ -368,7 +368,7 @@ deactivate
 1. 安装iPerf3
 
 ```
-sudo apt install iperf3
+$ sudo apt install iperf3
 ```
 
 2. 配置Systemd
@@ -391,13 +391,13 @@ WantedBy=multi-user.target
 
 ```
 # 重载systemd daemon配置
-sudo systemctl daemon-reload
+$ sudo systemctl daemon-reload
 
 # 配置iPerf3开机启动
-sudo systemctl enable iperf.service
+$ sudo systemctl enable iperf.service
 
 # 启动服务端iPerf3
-sudo systemctl start iperf.service
+$ sudo systemctl start iperf.service
 ```
 
 #### 部署Django Web App项目文件
@@ -406,17 +406,17 @@ sudo systemctl start iperf.service
 
 ```
 # 这里以v0.1-alpha为例
-wget https://github.com/cyjahappy/MonitorChildLinux/archive/v0.1-alpha.zip
+$ wget https://github.com/cyjahappy/MonitorChildLinux/archive/v0.1-alpha.zip
 ```
 
 2. 将下载的压缩文件解压在该用户的主目录(这里是/home/cyj)
 
 ```
 # 以v0.1-alpha为例
-unzip v0.1-alpha.zip
+$ unzip v0.1-alpha.zip
 
 # 将解压出来的文件夹重命名为MonitorChildLinux(必须与之前创建的虚拟环境的名字一样)
-mv MonitorChildLinux-0.1-alpha MonitorChildLinux
+$ mv MonitorChildLinux-0.1-alpha MonitorChildLinux
 
 # 最终项目文件的位置应该是/home/cyj/MonitorChildLinux
 ```
@@ -425,13 +425,13 @@ mv MonitorChildLinux-0.1-alpha MonitorChildLinux
 
 ```
 # 进入项目文件的文件夹
-cd /home/cyj/MonitorChildLinux
+$ cd /home/cyj/MonitorChildLinux
 
 # 进入刚才创建的名为MonitorChildLinux的虚拟环境
-workon MonitorChildLinux
+$ workon MonitorChildLinux
 
 # 根据requrirements.txt安装依赖文件
-pip3 install -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 
 4. 将/home/cyj/MonitorChildLinux/MonitorChildLinux/settings.py文件中ALLOWED_HOSTS= ['...']这栏中添加该服务器本机的公网IP地址
@@ -446,7 +446,7 @@ ALLOWED_HOSTS = ['157.245.176.143']
 6. 退出虚拟环境
 
 ```
-deactivate
+$ deactivate
 ```
 
 #### 安装Chrome浏览器, 及Chrome的浏览器驱动
@@ -454,23 +454,23 @@ deactivate
 1. 从官网下载Google Chrome
 
 ```
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+$ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 ```
 
 2. 安装Google Chrome
 
 ```
-sudo apt install ./google-chrome-stable_current_amd64.deb
+$ sudo apt install ./google-chrome-stable_current_amd64.deb
 
 # 确认浏览器的版本
-google-chrome --version
+$ google-chrome --version
 ```
 
 3. 从[ChromeDriver - WebDriver for Chrome](https://chromedriver.chromium.org/downloads)中找到对应Chrome版本的驱动, 并下载
 
 ```
 # 下载(这里以版本号83.0.4103.39为例)
-wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux64.zip
+$ wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux64.zip
 ```
 
 4. 将下载的压缩包解压到Django Web App项目文件根目录(这里是/home/cyj/MonitorChildLinux)
@@ -480,10 +480,10 @@ wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux
 1. 系统级的安装uWSGI(不可在虚拟环境中安装)
 
 ```
-pip3 install uwsgi
+$ pip3 install uwsgi
 
 # 检查版本
-uwsgi --verison 
+$ uwsgi --verison 
 ```
 
 2. 创建uWSGI的配置文件
@@ -520,11 +520,11 @@ vacuum          = true
 
 ```
 # 为 vassals 创建一个文件夹
-sudo mkdir /etc/uwsgi
-sudo mkdir /etc/uwsgi/vassals
+$ sudo mkdir /etc/uwsgi
+$ sudo mkdir /etc/uwsgi/vassals
 
 # 将刚才创建的uWSGI配置文件链接到/etc/uwsgi/vassals/
-sudo ln -s /home/cyj/MonitorChildLinux/MonitorChildLinux_uwsgi.ini /etc/uwsgi/vassals/
+$ sudo ln -s /home/cyj/MonitorChildLinux/MonitorChildLinux_uwsgi.ini /etc/uwsgi/vassals/
 ```
 
 4. 配置emperor.uwsgi.service
@@ -564,13 +564,13 @@ gid = root
 
 ```
 # 重载systemd daemon配置
-sudo systemctl daemon-reload
+$ sudo systemctl daemon-reload
 
 # 配置uWSGI开机启动
-sudo systemctl enable emperor.uwsgi.service
+$ sudo systemctl enable emperor.uwsgi.service
 
 # 启动uWSGI
-sudo systemctl start emperor.uwsgi.service
+$ sudo systemctl start emperor.uwsgi.service
 ```
 
 #### 配置Nginx
@@ -604,12 +604,12 @@ server {
 2. 从[nginx/uwsgi_params](https://github.com/nginx/nginx/blob/master/conf/uwsgi_params)下载Nginx的uwsgi_params文件到Django Web App项目目录中(/home/cyj/MonitorChildLinux/uwsgi_params)
 
 ```
-wget https://raw.githubusercontent.com/nginx/nginx/master/conf/uwsgi_params
+$ wget https://raw.githubusercontent.com/nginx/nginx/master/conf/uwsgi_params
 ```
 
 4. 重启Nginx
 
 ```
-systemctl restart nginx
+$ systemctl restart nginx
 ```
 

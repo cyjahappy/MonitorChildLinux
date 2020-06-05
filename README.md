@@ -299,32 +299,40 @@ CRM服务器监控系统(子服务器端)
 1. 创建用户
 
 ```
-# 以cyj为例
-$ adduser cyj
+# 以monitor为例
+$ adduser monitor
 ```
 
 2. 赋予用户sudo权限:
-
-    /etc/sudoers 追加一行(需要用强制保存)
+   
+打开/etc/sudoers
 
 ```
-cyj ALL=NOPASSWD: ALL
+$ sudo vim /etc/sudoers
 ```
+
+追加一行:
+
+```
+monitor ALL=NOPASSWD: ALL
+```
+
+需要用wq!强制保存
 
 3. 切换到用户
 
 ```
-# 切换到用户cyj
-$ su cyj
+# 切换到用户monitor
+$ su monitor
 ```
 
 #### 创建独立的Python虚拟环境
 
-1. 安装virtualenv和virtualenvwrapper
+1. 安装python3-pip, virtualenv和virtualenvwrapper
 
 ```
-$ pip3 install virtualenv
-$ pip3 install virtualenvwrapper
+$ sudo apt install python3-pip
+$ sudo -H pip3 install virtualenv virtualenvwrapper
 ```
 
 2. 创建目录用来存放虚拟环境
@@ -338,8 +346,8 @@ $ mkdir $HOME/.virtualenvs
 ```
 export WORKON_HOME=$HOME/.virtualenvs
 export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-export VIRTUALENVWRAPPER_VIRTUALENV=~/.local/bin/virtualenv
-source ~/.local/bin/virtualenvwrapper.sh
+export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
+source /usr/local/bin/virtualenvwrapper.sh
 ```
  
 4. 重新加载配置
@@ -375,7 +383,13 @@ $ sudo apt install iperf3
 
 2. 配置Systemd
 
-    在/lib/systemd/system中创建文件iperf.service, 并在文件中加入以下内容
+在/lib/systemd/system中创建文件iperf.service
+
+```
+sudo vim /lib/systemd/system/iperf.service
+```
+
+并在文件中加入以下内容
 
 ```
 [Unit]
@@ -408,26 +422,26 @@ $ sudo systemctl start iperf.service
 
 ```
 # 这里以v0.1-alpha为例
-$ wget https://github.com/cyjahappy/MonitorChildLinux/archive/v0.1-alpha.zip
+$ wget https://github.com/cyjahappy/MonitorChildLinux/archive/v0.1.2-alpha.tar.gz
 ```
 
-2. 将下载的压缩文件解压在该用户的主目录(这里是/home/cyj)
+2. 将下载的压缩文件解压在该用户的主目录(这里是/home/monitor)
 
 ```
-# 以v0.1-alpha为例
-$ unzip v0.1-alpha.zip
+# 以v0.1.2-alpha为例
+$ tar -zxvf v0.1.2-alpha.tar.gz
 
 # 将解压出来的文件夹重命名为MonitorChildLinux(必须与之前创建的虚拟环境的名字一样)
-$ mv MonitorChildLinux-0.1-alpha MonitorChildLinux
+$ mv MonitorChildLinux-0.1.2-alpha MonitorChildLinux
 
-# 最终项目文件的位置应该是/home/cyj/MonitorChildLinux
+# 最终项目文件的位置应该是/home/monitor/MonitorChildLinux
 ```
 
 3. 安装依赖文件
 
 ```
 # 进入项目文件的文件夹
-$ cd /home/cyj/MonitorChildLinux
+$ cd /home/monitor/MonitorChildLinux
 
 # 进入刚才创建的名为MonitorChildLinux的虚拟环境
 $ workon MonitorChildLinux
@@ -436,16 +450,14 @@ $ workon MonitorChildLinux
 $ pip3 install -r requirements.txt
 ```
 
-4. 将/home/cyj/MonitorChildLinux/MonitorChildLinux/settings.py文件中ALLOWED_HOSTS= ['...']这栏中添加该服务器本机的公网IP地址
+4. 将/home/monitor/MonitorChildLinux/MonitorChildLinux/settings.py文件中ALLOWED_HOSTS= ['...']这栏中添加该服务器本机的公网IP地址
 
 ```
-# 本例中服务器IP地址为157.245.176.143
-ALLOWED_HOSTS = ['157.245.176.143']
+# 本例中服务器IP地址为128.199.234.70
+ALLOWED_HOSTS = ['128.199.234.70']
 ```
 
-5. 将/home/cyj/MonitorChildLinux/db.sqlite3中Monitor_serverlist表中加入所有子服务器的IP地址
-
-6. 退出虚拟环境
+5. 退出虚拟环境
 
 ```
 $ deactivate
@@ -475,21 +487,21 @@ $ google-chrome --version
 $ wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux64.zip
 ```
 
-4. 将下载的压缩包解压到项目Python虚拟环境的文件夹内中的bin中(这里是/home/cyj/.virtualenvs/MonitorChildLinux/bin/chromedriver)
+4. 将下载的压缩包解压到项目Python虚拟环境的文件夹内中的bin中(这里是/home/monitor/.virtualenvs/MonitorChildLinux/bin/chromedriver)
 
 #### 安装uWSGI, 并配置开机启动
 
 1. 系统级的安装uWSGI(不可在虚拟环境中安装)
 
 ```
-$ pip3 install uwsgi
+$ sudo -H pip3 install uwsgi
 
 # 检查版本
 $ uwsgi --verison 
 ```
 
 2. 创建uWSGI的配置文件
-    在/home/cyj/MonitorChildLinux文件夹中创建文件MonitorChildLinux_uwsgi.ini, 并写入以下内容:
+    在/home/monitor/MonitorChildLinux文件夹中创建文件MonitorChildLinux_uwsgi.ini, 并写入以下内容:
 
 ```
 # MonitorChildLinux_uwsgi.ini file
@@ -497,11 +509,11 @@ $ uwsgi --verison
 
 # Django-related settings
 # Django Web App项目文件的目录路径 (绝对路径)
-chdir           = /home/cyj/MonitorChildLinux
+chdir           = /home/monitor/MonitorChildLinux
 # Django的 wsgi 文件(不用更改)
 module          = MonitorChildLinux.wsgi
 # Python虚拟环境的路径 (绝对路径)
-home            = /home/cyj/.virtualenvs/MonitorChildLinux
+home            = /home/monitor/.virtualenvs/MonitorChildLinux
 
 # process-related settings
 # master
@@ -509,7 +521,7 @@ master          = true
 # 规定运行Django Web App的容器的最大进程数
 processes       = 10
 # 指向生成的Unix Socket路径(之后给Nginx调用)(绝对路径)
-socket          = /home/cyj/MonitorChildLinux/MonitorChildLinux.sock
+socket          = /home/monitor/MonitorChildLinux/MonitorChildLinux.sock
 # 设置Unix Socket的读写权限
 chmod-socket    = 777
 # clear environment on exit
@@ -526,7 +538,7 @@ $ sudo mkdir /etc/uwsgi
 $ sudo mkdir /etc/uwsgi/vassals
 
 # 将刚才创建的uWSGI配置文件链接到/etc/uwsgi/vassals/
-$ sudo ln -s /home/cyj/MonitorChildLinux/MonitorChildLinux_uwsgi.ini /etc/uwsgi/vassals/
+$ sudo ln -s /home/monitor/MonitorChildLinux/MonitorChildLinux_uwsgi.ini /etc/uwsgi/vassals/
 ```
 
 4. 配置emperor.uwsgi.service
@@ -583,7 +595,7 @@ $ sudo systemctl start emperor.uwsgi.service
 # MonitorChildLinux_nginx.conf
 
 upstream django {
-    server unix:///home/cyj/MonitorChildLinux/MonitorChildLinux.sock; # 指向项目目录中的Unix socket(运行uWSGI后会自动生成)
+    server unix:///home/monitor/MonitorChildLinux/MonitorChildLinux.sock; # 指向项目目录中的Unix socket(运行uWSGI后会自动生成)
 }
 
 # configuration of the server
@@ -598,12 +610,12 @@ server {
 
     location / {
         uwsgi_pass  django;
-        include     /home/cyj/MonitorChildLinux/uwsgi_params; # 指向uwsgi_params
+        include     /home/monitor/MonitorChildLinux/uwsgi_params; # 指向uwsgi_params
     }
 }
 ```
 
-2. 从[nginx/uwsgi_params](https://github.com/nginx/nginx/blob/master/conf/uwsgi_params)下载Nginx的uwsgi_params文件到Django Web App项目目录中(/home/cyj/MonitorChildLinux/uwsgi_params)
+2. 从[nginx/uwsgi_params](https://github.com/nginx/nginx/blob/master/conf/uwsgi_params)下载Nginx的uwsgi_params文件到Django Web App项目目录中(/home/monitor/MonitorChildLinux/uwsgi_params)
 
 ```
 $ wget https://raw.githubusercontent.com/nginx/nginx/master/conf/uwsgi_params

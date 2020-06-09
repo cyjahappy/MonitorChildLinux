@@ -345,8 +345,7 @@ $ su cyj
 1. 安装virtualenv和virtualenvwrapper
 
 ```
-$ pip3 install virtualenv
-$ pip3 install virtualenvwrapper
+$ sudo -H pip3 install virtualenv virtualenvwrapper
 ```
 
 2. 创建目录用来存放虚拟环境
@@ -504,7 +503,7 @@ $ wget https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_lin
 1. 系统级的安装uWSGI(不可在虚拟环境中安装)
 
 ```
-$ pip3 install uwsgi
+$ sudo -H pip3 install uwsgi
 
 # 检查版本
 $ uwsgi --verison 
